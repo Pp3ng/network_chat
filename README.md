@@ -1,7 +1,9 @@
 # Chat Server and Client
 
-This is a simple chat server and client written in Python. The server is multithreaded and can handle multiple clients at once. The server is able to broadcast messages to all connected clients. The client is able to send messages to the server and receive messages from the server.
-
+This is a simple chat server and client written in C. The server is multithreaded and can handle
+multiple clients at once. The server is able to broadcast messages to all connected clients.The client
+is able to send messages to the other clients and receive messages from them or private
+message to a specified client.
 ## Features
 
 - Multithreaded server: The server is able to handle multiple clients at once.
