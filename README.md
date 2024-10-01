@@ -4,12 +4,14 @@ This is a simple chat server and client written in C. The server is multithreade
 multiple clients at once. The server is able to broadcast messages to all connected clients.The client
 is able to send messages to the other clients and receive messages from them or private
 message to a specified client.
+
 ## Features
 
 - Multithreaded server: The server is able to handle multiple clients at once.
 - Broadcast messages: The server is able to broadcast messages to all connected clients.
 - Send and receive messages: The client is able to send messages to the server and receive messages from the server.
 - Server logging: The server logs all messages received from clients.
+- Server save chat history: The server saves all messages received from clients in a file.
 - Private messages: The client is able to send private messages to other clients.
 
 ## Dependencies
@@ -30,4 +32,5 @@ make client && make server
 
 - Public message: Simply type your message and press Enter to send it to all connected clients.
 - Private message: Use the command /w <username> <message> to send a private message to a specific user.
+- list: Use the command /list to list all connected clients.
 - Quit: Use the command /quit to exit the client.

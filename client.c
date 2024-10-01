@@ -38,7 +38,6 @@ void *receive_messages(void *arg)
 
     return NULL;
 }
-
 int main()
 {
     int sock;

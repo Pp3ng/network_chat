@@ -12,6 +12,7 @@
 #define MAX_CLIENTS 100
 #define MAX_USERNAME_LENGTH 50
 #define LOG_FILE "server_log.txt"
+#define CHAT_HISTORY_FILE "chat_history.txt"
 
 typedef struct
 {
@@ -124,6 +125,34 @@ void private_message(const char *message, const char *target_username, int exclu
     pthread_mutex_unlock(&client_list_mutex);
 }
 
+void list_users(int client_socket)
+{
+    pthread_mutex_lock(&client_list_mutex);
+    char user_list[BUFFER_SIZE] = "Connected users:\n";
+    for (int i = 0; i < client_count; i++)
+    {
+        strcat(user_list, clients[i].username);
+        strcat(user_list, "\n");
+    }
+    pthread_mutex_unlock(&client_list_mutex);
+    send(client_socket, user_list, strlen(user_list), 0);
+}
+void save_chat_history()
+{
+    FILE *chat_history_file = fopen(CHAT_HISTORY_FILE, "w");
+    if (chat_history_file == NULL)
+    {
+        perror("Unable to open chat history file");
+        pthread_mutex_unlock(&chat_history_mutex);
+        return;
+    }
+    for (int i = 0; i < chat_count; i++)
+    {
+        fprintf(chat_history_file, "%s\n", chat_history[i]);
+    }
+    fclose(chat_history_file);
+}
+
 void *handle_client(void *arg)
 {
     int client_socket = *(int *)arg;
@@ -163,6 +192,10 @@ void *handle_client(void *arg)
             snprintf(message_with_username, sizeof(message_with_username), "(Private) [%s] %s: %s", timestamp, username, private_msg);
             private_message(message_with_username, target_username, client_socket);
         }
+        else if (strcmp(buffer, "/list") == 0)
+        {
+            list_users(client_socket);
+        }
         else
         {
             // Add username and timestamp to the message
@@ -177,6 +210,7 @@ void *handle_client(void *arg)
                 chat_history[chat_count][sizeof(chat_history[chat_count]) - 1] = '\0';
                 chat_count++;
             }
+            save_chat_history();
             pthread_mutex_unlock(&chat_history_mutex);
 
             // Print chat history
