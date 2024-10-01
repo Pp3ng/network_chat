@@ -4,6 +4,7 @@
 #include <unistd.h>
 #include <pthread.h>
 #include <arpa/inet.h>
+#include <time.h>
 
 #define PORT 9527
 #define BUFFER_SIZE 1024
@@ -26,31 +27,55 @@ void *receive_messages(void *arg)
     while ((n = recv(sock, buffer, sizeof(buffer), 0)) > 0)
     {
         buffer[n] = '\0';
-        printf("%s\n", buffer);
+        time_t now = time(NULL);
+        struct tm *t = localtime(&now);
+        printf("\r[%02d:%02d:%02d] %s\n> ", t->tm_hour, t->tm_min, t->tm_sec, buffer);
+        fflush(stdout);
     }
 
     if (n == 0)
     {
-        printf("Server has closed the connection\n");
+        printf("\rServer has closed the connection\n");
+        fflush(stdout);
         close(sock);
         exit(0);
     }
 
     return NULL;
 }
-int main()
+
+void print_help()
 {
+    printf("Available commands:\n");
+    printf("/quit - Exit the chat\n");
+    printf("/w <username> <message> - Send a private message\n");
+    printf("/list - List all connected users\n");
+    printf("/history - Request chat history\n");
+    printf("/clear - Clear the screen\n");
+    printf("/help - Show this help message\n");
+}
+
+int main(int argc, char *argv[])
+{
+    if (argc != 2)
+    {
+        fprintf(stderr, "Usage: %s <server_ip>\n", argv[0]);
+        exit(EXIT_FAILURE);
+    }
+
+    const char *server_ip = argv[1];
     int sock;
     struct sockaddr_in server_addr;
     char buffer[BUFFER_SIZE];
     pthread_t thread_id;
     char username[50];
+    char channel[10];
 
     check_error((sock = socket(AF_INET, SOCK_STREAM, 0)), "Socket creation failed");
 
     server_addr.sin_family = AF_INET;
     server_addr.sin_port = htons(PORT);
-    check_error(inet_pton(AF_INET, "127.0.0.1", &server_addr.sin_addr), "Invalid address");
+    check_error(inet_pton(AF_INET, server_ip, &server_addr.sin_addr), "Invalid address");
 
     check_error(connect(sock, (struct sockaddr *)&server_addr, sizeof(server_addr)), "Connection failed");
 
@@ -60,8 +85,16 @@ int main()
     username[strcspn(username, "\n")] = 0;
     send(sock, username, strlen(username), 0);
 
+    // Input and send channel number
+    printf("Enter channel number: ");
+    fgets(channel, sizeof(channel), stdin);
+    channel[strcspn(channel, "\n")] = 0;
+    send(sock, channel, strlen(channel), 0);
+
     pthread_create(&thread_id, NULL, receive_messages, (void *)&sock);
     pthread_detach(thread_id);
+
+    print_help();
 
     while (1)
     {
@@ -75,11 +108,24 @@ int main()
             close(sock);
             exit(0);
         }
-
-        // Handle private message command
-        if (strncmp(buffer, "/w ", 3) == 0)
+        else if (strcmp(buffer, "/help") == 0)
         {
-            // Directly send the buffer as it contains the '/w ' command
+            print_help();
+        }
+        else if (strcmp(buffer, "/clear") == 0)
+        {
+            printf("\033[H\033[J"); // ANSI escape code to clear the screen
+        }
+        else if (strncmp(buffer, "/w ", 3) == 0)
+        {
+            send(sock, buffer, strlen(buffer), 0);
+        }
+        else if (strcmp(buffer, "/history") == 0)
+        {
+            send(sock, buffer, strlen(buffer), 0);
+        }
+        else if (strcmp(buffer, "/list") == 0)
+        {
             send(sock, buffer, strlen(buffer), 0);
         }
         else
