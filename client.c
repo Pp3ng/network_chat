@@ -116,18 +116,6 @@ int main(int argc, char *argv[])
         {
             printf("\033[H\033[J"); // ANSI escape code to clear the screen
         }
-        else if (strncmp(buffer, "/w ", 3) == 0)
-        {
-            send(sock, buffer, strlen(buffer), 0);
-        }
-        else if (strcmp(buffer, "/history") == 0)
-        {
-            send(sock, buffer, strlen(buffer), 0);
-        }
-        else if (strcmp(buffer, "/list") == 0)
-        {
-            send(sock, buffer, strlen(buffer), 0);
-        }
         else
         {
             send(sock, buffer, strlen(buffer), 0);
