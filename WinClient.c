@@ -4,7 +4,7 @@
 #include <winsock2.h>
 #include <windows.h>
 #include <Ws2tcpip.h> //InetPtonW
-#include <cstdio>
+#include <stdio.h>
 #include <commctrl.h>
 #include <wchar.h>
 
@@ -35,44 +35,44 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
         // Create IP address input box
         CreateWindowExW(0, L"STATIC", L"IP:",
                         WS_CHILD | WS_VISIBLE,
-                        10, 10, 80, 25, hwnd, nullptr, hInst, nullptr);
+                        10, 10, 80, 25, hwnd, NULL, hInst, NULL);
         hEditIP = CreateWindowExW(0, L"EDIT", L"",
                                   WS_CHILD | WS_VISIBLE | WS_BORDER | ES_AUTOHSCROLL,
-                                  100, 10, 200, 25, hwnd, nullptr, hInst, nullptr);
+                                  100, 10, 200, 25, hwnd, NULL, hInst, NULL);
 
         // Create ID input box
         CreateWindowExW(0, L"STATIC", L"ID:",
                         WS_CHILD | WS_VISIBLE,
-                        10, 40, 80, 25, hwnd, nullptr, hInst, nullptr);
+                        10, 40, 80, 25, hwnd, NULL, hInst, NULL);
         hEditID = CreateWindowExW(0, L"EDIT", L"",
                                   WS_CHILD | WS_VISIBLE | WS_BORDER | ES_AUTOHSCROLL,
-                                  100, 40, 200, 25, hwnd, nullptr, hInst, nullptr);
+                                  100, 40, 200, 25, hwnd, NULL, hInst, NULL);
 
         // Create channel input box
         CreateWindowExW(0, L"STATIC", L"Channel:",
                         WS_CHILD | WS_VISIBLE,
-                        10, 70, 100, 25, hwnd, nullptr, hInst, nullptr);
+                        10, 70, 100, 25, hwnd, NULL, hInst, NULL);
         hEditChannel = CreateWindowExW(0, L"EDIT", L"",
                                        WS_CHILD | WS_VISIBLE | WS_BORDER | ES_AUTOHSCROLL,
-                                       100, 70, 200, 25, hwnd, nullptr, hInst, nullptr);
+                                       100, 70, 200, 25, hwnd, NULL, hInst, NULL);
 
         // Create input box
         hEditInput = CreateWindowExW(0, L"EDIT", L"",
                                      WS_CHILD | WS_VISIBLE | WS_BORDER | ES_AUTOHSCROLL | ES_MULTILINE,
-                                     10, 100, 370, 50, hwnd, nullptr, hInst, nullptr);
+                                     10, 100, 370, 50, hwnd, NULL, hInst, NULL);
         // Create send button
         HWND hButtonSend = CreateWindowExW(0, L"BUTTON", L"Send",
                                            WS_CHILD | WS_VISIBLE | WS_DISABLED,
-                                           390, 100, 80, 50, hwnd, (HMENU)1, hInst, nullptr);
+                                           390, 100, 80, 50, hwnd, (HMENU)1, hInst, NULL);
 
         // Create output box
         hEditOutput = CreateWindowExW(0, L"EDIT", L"",
                                       WS_CHILD | WS_VISIBLE | WS_VSCROLL | WS_BORDER | ES_MULTILINE | ES_READONLY,
-                                      10, 160, 460, 230, hwnd, nullptr, hInst, nullptr);
+                                      10, 160, 460, 230, hwnd, NULL, hInst, NULL);
         // Create connect button
         CreateWindowExW(0, L"BUTTON", L"Connect",
                         WS_CHILD | WS_VISIBLE,
-                        390, 40, 80, 50, hwnd, (HMENU)2, hInst, nullptr);
+                        390, 40, 80, 50, hwnd, (HMENU)2, hInst, NULL);
         break;
     }
     case WM_ERASEBKGND:
@@ -163,7 +163,7 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
                 int errorCode = WSAGetLastError();
                 wchar_t errorMessage[256];
                 swprintf(errorMessage, sizeof(errorMessage) / sizeof(errorMessage[0]), L"Failed to connect to server! Error code: %d", errorCode);
-                MessageBoxW(nullptr, errorMessage, L"Error", MB_OK);
+                MessageBoxW(NULL, errorMessage, L"Error", MB_OK);
                 return 1;
             }
 
@@ -234,14 +234,14 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
     wc.lpfnWndProc = WindowProc;
     wc.hInstance = hInstance;
     wc.lpszClassName = szWindowClass;
-    wc.hCursor = LoadCursor(nullptr, IDC_ARROW);
+    wc.hCursor = LoadCursor(NULL, IDC_ARROW);
     wc.hbrBackground = (HBRUSH)(COLOR_WINDOW + 1);
     RegisterClassExW(&wc);
 
     // Create the window
     HWND hwnd = CreateWindowExW(0, szWindowClass, szTitle,
                                 WS_OVERLAPPEDWINDOW, CW_USEDEFAULT, CW_USEDEFAULT, 500, 450,
-                                nullptr, nullptr, hInstance, nullptr);
+                                NULL, NULL, hInstance, NULL);
 
     ShowWindow(hwnd, nCmdShow);
 
@@ -251,7 +251,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
 
     // Message loop
     MSG msg;
-    while (GetMessage(&msg, nullptr, 0, 0))
+    while (GetMessage(&msg, NULL, 0, 0))
     {
         TranslateMessage(&msg);
         DispatchMessage(&msg);
