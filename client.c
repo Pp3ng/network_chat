@@ -50,7 +50,6 @@ void print_help()
     printf("/quit - Exit the chat\n");
     printf("/w <username> <message> - Send a private message\n");
     printf("/list - List all connected users\n");
-    printf("/history - Request chat history\n");
     printf("/clear - Clear the screen\n");
     printf("/help - Show this help message\n");
 }
